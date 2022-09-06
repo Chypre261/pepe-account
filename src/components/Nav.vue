@@ -2,17 +2,17 @@
   <nav>
 
     <router-link to="/labels" class="item" active-class="selected">
-      <Icon name="labels" />
+
       Label
     </router-link>
 
     <router-link to="/money" class="item" active-class="selected">
-      <Icon name="money" />
+
       Add
     </router-link>
 
     <router-link to="/statistics" class="item" active-class="selected">
-      <Icon name="statistics" />
+
       Statistics
     </router-link>
   </nav>
