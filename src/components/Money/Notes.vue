@@ -2,8 +2,8 @@
   <div>
     <label class="notes">
       <span class="name">备注</span>
-      <input type="text" :value="value"
-             @change="onChange"
+      <input type="text"
+             v-model="value"
              placeholder="在这里输入备注">
     </label>
   </div>
@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {Component} from 'vue-property-decorator';
+import {Component, Watch} from 'vue-property-decorator';
 
 @Component
 export default class Notes extends Vue {
@@ -19,27 +19,35 @@ export default class Notes extends Vue {
 
   onChange(event: KeyboardEvent) {
     const input = event.target as HTMLInputElement;
-    this.value = input.value
+    this.value = input.value;
   }
+
+  @Watch('value')
+  onValueChanged(val: string, oldVal: string) {
+    this.$emit('update:value', val);
+  }
+
 };
 </script>
 
 <style lang="scss" scoped>
-  .notes {
-    font-size: 14px;
-    background: #f5f5f5;
-    padding-left: 16px;
-    display: flex;
-    align-items: center;
-    .name {
-      padding-right: 16px;
-    }
-    input {
-      height: 64px;
-      flex-grow: 1;
-      background: transparent;
-      border: none;
-      padding-right: 16px;
-    }
+.notes {
+  font-size: 14px;
+  background: #f5f5f5;
+  padding-left: 16px;
+  display: flex;
+  align-items: center;
+
+  .name {
+    padding-right: 16px;
   }
+
+  input {
+    height: 64px;
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    padding-right: 16px;
+  }
+}
 </style>
