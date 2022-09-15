@@ -14,7 +14,7 @@ import Types from '@/components/Money/Types.vue';
 import Notes from '@/components/Money/Notes.vue';
 import Tags from '@/components/Money/Tags.vue';
 import {Component, Watch} from 'vue-property-decorator';
-import model from '@/model';
+import model from '@/models/recordListModel';
 
 const recordList = model.fetch()
 
