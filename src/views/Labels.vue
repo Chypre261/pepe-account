@@ -16,12 +16,21 @@ import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 import tagListModel from '@/models/tagListModel';
 
-
+tagListModel.fetch();
 @Component
 export default class Labels extends Vue {
-  tags = tagListModel.fetch();
-  createTag(){
-    const name =  window.prompt('请输入新标签名');
+  tags = tagListModel.data;
+
+  createTag() {
+    const name = window.prompt('请输入新标签名');
+    if (name) {
+      const message = tagListModel.create(name);
+      if (message === 'duplicated') {
+        window.alert('标签名重复了');
+      } else if (message === 'success') {
+        window.alert('添加成功');
+      }
+    }
   }
 };
 </script>
