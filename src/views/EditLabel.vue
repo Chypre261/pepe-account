@@ -1,6 +1,7 @@
 <template>
   <Layout>
     <div class="navBar">
+      <span @click="goBack"><</span>
       <span class="title">编辑标签</span>
     </div>
     <div class="form-wrapper">
@@ -50,6 +51,10 @@ export default class EditLabel extends Vue {
     if (this.tag) {
       tagListModel.remove(this.tag.id);
     }
+  }
+
+  goBack() {
+    this.$router.back();
   }
 
 };
