@@ -10,7 +10,7 @@
       </FormItem>
     </div>
     <div class="button-wrapper">
-      <Button>删除标签</Button>
+      <Button @click="removeTag">删除标签</Button>
     </div>
   </Layout>
 </template>
@@ -43,6 +43,12 @@ export default class EditLabel extends Vue {
   updateTag(name: string) {
     if (this.tag) {
       tagListModel.update(this.tag.id, name);
+    }
+  }
+
+  removeTag() {
+    if (this.tag) {
+      tagListModel.remove(this.tag.id);
     }
   }
 
