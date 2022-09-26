@@ -3,8 +3,8 @@
     <NumberPad :value.sync="record.amount" @submit="saveRecord"/>
     <Types :value.sync="record.type"/>
     <FormItem field-name="备注"
-           placeholder="请在这里输入备注"
-           @update:value="onUpdateNotes"/>
+              placeholder="请在这里输入备注"
+              @update:value="onUpdateNotes"/>
     <Tags :data-source.sync="tags" @update:value="onUpdateTags"/>
   </Layout>
 </template>
@@ -27,7 +27,7 @@ const tagList = tagListModel.fetch();
 })
 
 export default class Money extends Vue {
-  recordList: RecordItem [] = recordList ;
+  recordList: RecordItem [] = recordList;
   record: RecordItem = {
     tags: [], notes: '', type: '-', amount: 0
   };
@@ -41,25 +41,24 @@ export default class Money extends Vue {
   }
 
   saveRecord(value: string[]) {
-    const recordDeep: RecordItem = recordListModel.clone(this.recoßrd);
-    recordDeep.createdAt = new Date();
-    this.recordList.push(recordDeep);
+    recordListModel.create(this.record);
   }
 
   @Watch('recordList')
   onRecordListChange() {
-    recordListModel.save(this.recordList);
+    recordListModel.save();
   }
 
 };
 </script>
 
 <style lang="scss">
-  .layout-content {
-    display: flex;
-    flex-direction: column-reverse;
-  }
-  .notes{
-    padding: 12px 0;
-  }
+.layout-content {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.notes {
+  padding: 12px 0;
+}
 </style>
