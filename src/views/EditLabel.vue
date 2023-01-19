@@ -6,12 +6,11 @@
     </div>
     <div class="form-wrapper">
       <FormItem :value="tag.name"
-                @update:value="updateTag"
-                field-name="标签名" placeholder="请输入标签名">
-      </FormItem>
+                @update:value="update"
+                field-name="标签名" placeholder="请输入标签名"/>
     </div>
     <div class="button-wrapper">
-      <Button @click="removeTag">删除标签</Button>
+      <Button @click="remove">删除标签</Button>
     </div>
   </Layout>
 </template>
@@ -21,6 +20,7 @@ import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 import FormItem from '@/components/Money/FormItem.vue';
 import Button from '@/components/Button.vue';
+import store from '@/store/index2';
 
 @Component({
   components: {Button, FormItem}
@@ -29,21 +29,21 @@ export default class EditLabel extends Vue {
   tag?: Tag = undefined;
 
   created() {
-    this.tag = window.findTag(this.$route.params.id );
-    if(!this.tag) {
+    this.tag = store.findTag(this.$route.params.id);
+    if (!this.tag) {
       this.$router.replace('/404');
     }
   }
 
-  updateTag(name: string) {
+  update(name: string) {
     if (this.tag) {
-      window.updateTag(this.tag.id, name);
+      store.updateTag(this.tag.id, name);
     }
   }
 
-  removeTag() {
+  remove() {
     if (this.tag) {
-      if (window.removeTag(this.tag.id)) {
+      if (store.removeTag(this.tag.id)) {
         this.$router.back();
       } else {
         window.alert('删除失败');
@@ -54,8 +54,7 @@ export default class EditLabel extends Vue {
   goBack() {
     this.$router.back();
   }
-
-};
+}
 </script>
 
 <style lang="scss" scoped>
