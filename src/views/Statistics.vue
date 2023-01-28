@@ -2,6 +2,14 @@
   <Layout>
     <Tabs class-prefix="type" :data-source="recordTypeList" :value.sync="type"/>
     <Tabs class-prefix="interval" :data-source="intervalList" :value.sync="interval"/>
+    <div>
+      <ol>
+        <li v-for="item in result" :key="item.id">
+          {{ item }}
+        </li>
+      </ol>
+    </div>
+
   </Layout>
 </template>
 
@@ -16,6 +24,24 @@ import recordTypeList from '@/constants/recordTypeList';
   components: {Tabs},
 })
 export default class Statistics extends Vue {
+  get recordList() {
+    return this.$store.state.recordList;
+  }
+
+  get result() {
+    const {recordList} = this;
+    const hashTable = {};
+    for (let i = 0; i <=  recordList.length; i++) {
+
+    }
+   }
+
+  created() {
+    this.$store.commit('fetchRecords');
+    console.log(this.recordList);
+  }
+
+
   type = '-';
   interval = 'daily';
 
@@ -35,5 +61,9 @@ export default class Statistics extends Vue {
       display: none;
     }
   }
+}
+
+::v-deep .interval-tabs-item {
+  height: 48px;
 }
 </style>
