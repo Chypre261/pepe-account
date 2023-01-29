@@ -50,8 +50,8 @@ export default class Money extends Vue {
 }
 </script>
 
-<style lang="scss">
-.layout-content {
+<style lang="scss" scoped>
+::v-deep .layout-content {
   display: flex;
   flex-direction: column-reverse;
 }
@@ -59,4 +59,21 @@ export default class Money extends Vue {
 .notes {
   padding: 12px 0;
 }
+</style>
+
+<style scoped lang="scss">
+  ::v-deep {
+    .type-tabs-item {
+      background: white;
+      &.selected {
+        background: #C4C4C4;
+        &::after {
+          display: none;
+        }
+      }
+    }
+    .interval-tabs-item {
+      height: 48px;
+    }
+  }
 </style>
