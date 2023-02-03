@@ -4,7 +4,7 @@
     <Tabs class-prefix="interval" :data-source="intervalList" :value.sync="interval"/>
     <ol>
       <li v-for="(group,index) in result" :key="index">
-        <h3 class="title">{{ group.title }}</h3>
+        <h3 class="title">{{beautify(group.title)}} <span>￥{{group.total}}</span></h3>
         <ol>
           <li v-for="item in group.items" :key="item.id"
               class="record"
@@ -35,6 +35,23 @@ import clone from '@/lib/clone';
 export default class Statistics extends Vue {
   tagString(tags: Tag[]) {
     return tags.length === 0 ? '无' : tags.join(',');
+  }
+
+  beautify(string: string) {
+    const day = dayjs(string);
+    const now = dayjs();
+    if (day.isSame(now, 'day')) {
+      return '今天';
+    } else if (day.isSame(now.subtract(1, 'day'), 'day')) {
+      console.log('hi');
+      return '昨天';
+    } else if (day.isSame(now.subtract(2, 'day'), 'day')) {
+      return '前天';
+    } else if (day.isSame(now, 'year')) {
+      return day.format('M月D日');
+    } else {
+      return day.format('YYYY年M月D日');
+    }
   }
 
   get recordList() {
