@@ -6,6 +6,7 @@ declare module '*.svg' {
 type RootState = {
   recordList: RecordItem[],
   createRecordError: Error | null,
+  createTagError: Error | null,
   tagList: Tag[],
   currentTag?: Tag
 }
@@ -15,7 +16,7 @@ type RecordItem = {
   notes: string,
   type: string,
   amount: number,
-  createdAt?: string // 类 or 构造函数
+  createdAt?: string
 }
 
 type Tag = {

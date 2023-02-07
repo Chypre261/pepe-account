@@ -2,9 +2,9 @@
   <Layout>
     <Tabs class-prefix="type" :data-source="recordTypeList" :value.sync="type"/>
     <Tabs class-prefix="interval" :data-source="intervalList" :value.sync="interval"/>
-    <ol>
+    <ol v-if="groupedList.length > 0">
       <li v-for="(group,index) in groupedList" :key="index">
-        <h3 class="title">{{beautify(group.title)}} <span>￥{{group.total}}</span></h3>
+        <h3 class="title">{{ beautify(group.title) }} <span>￥{{ group.total }}</span></h3>
         <ol>
           <li v-for="item in group.items" :key="item.id"
               class="record"
@@ -16,7 +16,9 @@
         </ol>
       </li>
     </ol>
-
+    <div v-else>
+      Please input your records.
+    </div>
   </Layout>
 </template>
 
@@ -34,7 +36,7 @@ import clone from '@/lib/clone';
 })
 export default class Statistics extends Vue {
   tagString(tags: Tag[]) {
-    return tags.length === 0 ? '无' : tags.map(t=>t.name).join(',');
+    return tags.length === 0 ? '无' : tags.map(t => t.name).join(',');
   }
 
   beautify(string: string) {
@@ -59,31 +61,31 @@ export default class Statistics extends Vue {
   }
 
   get groupedList() {
-      const {recordList} = this;
-      if (recordList.length === 0) {return [];}
-      const newList = clone(recordList)
+    const {recordList} = this;
+    if (recordList.length === 0) {
+      return [];
+    }
+    const newList = clone(recordList)
         .filter(r => r.type === this.type)
         .sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf());
-      type Result = { title: string, total?: number, items: RecordItem[] }[]
-      const result: Result = [{title: dayjs(newList[0].createdAt).format('YYYY-MM-DD'), items: [newList[0]]}];
-      for (let i = 1; i < newList.length; i++) {
-        const current = newList[i];
-        const last = result[result.length - 1];
-        if (dayjs(last.title).isSame(dayjs(current.createdAt), 'day')) {
-          last.items.push(current);
-        } else {
-          result.push({title: dayjs(current.createdAt).format('YYYY-MM-DD'), items: [current]});
-        }
+    type Result = { title: string, total?: number, items: RecordItem[] }[]
+    const result: Result = [{title: dayjs(newList[0].createdAt).format('YYYY-MM-DD'), items: [newList[0]]}];
+    for (let i = 1; i < newList.length; i++) {
+      const current = newList[i];
+      const last = result[result.length - 1];
+      if (dayjs(last.title).isSame(dayjs(current.createdAt), 'day')) {
+        last.items.push(current);
+      } else {
+        result.push({title: dayjs(current.createdAt).format('YYYY-MM-DD'), items: [current]});
       }
-      result.map(group => {
-        group.total = group.items.reduce((sum, item) => {
-          console.log(sum);
-          console.log(item);
-          return sum + item.amount;
-        }, 0);
-      });
-      return result;
     }
+    result.map(group => {
+      group.total = group.items.reduce((sum, item) => {
+        return sum + item.amount;
+      }, 0);
+    });
+    return result;
+  }
 
   beforeCreate() {
     this.$store.commit('fetchRecords');
