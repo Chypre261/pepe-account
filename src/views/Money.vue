@@ -3,6 +3,13 @@
     <NumberPad :value.sync="record.amount" @submit="saveRecord"/>
     <Tabs :data-source="recordTypeList"
           :value.sync="record.type"></Tabs>
+    <div class="createdAt">
+      <FormItem field-name="日期"
+        type="date"
+        placeholder="在这里输入日期"
+        :value.sync="record.createdAt"
+      />
+    </div>
     <div class="notes">
       <FormItem field-name="备注"
                 placeholder="在这里输入备注"
@@ -27,11 +34,11 @@ import Tabs from '@/components/Tabs.vue';
 })
 export default class Money extends Vue {
   get recordList() {
-    this.$store.state.recordList;
+    return this.$store.state.recordList;
   }
 
   record: RecordItem = {
-    tags: [], notes: '', type: '-', amount: 0
+    tags: [], notes: '', type: '-', amount: 0, createdAt: new Date().toISOString()
   };
 
   recordTypeList = recordTypeList;
