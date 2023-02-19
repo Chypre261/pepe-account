@@ -3,7 +3,7 @@
     <Tabs class-prefix="type" :data-source="recordTypeList" :value.sync="type"/>
     <Tabs class-prefix="interval" :data-source="intervalList" :value.sync="interval"/>
     <div class="chart-wrapper" ref="chartWrapper">
-      <Chart class="chart" :options="x"/>
+      <Chart class="chart" :options="chartOptions"/>
     </div>
     <ol v-if="groupedList.length > 0">
       <li v-for="(group,index) in groupedList" :key="index">
@@ -34,6 +34,8 @@ import recordTypeList from '@/constants/recordTypeList';
 import dayjs from 'dayjs';
 import clone from '@/lib/clone';
 import Chart from '@/components/Chart.vue';
+import _ from 'lodash';
+import day from 'dayjs';
 
 @Component({
   components: {Tabs, Chart},
@@ -66,7 +68,30 @@ export default class Statistics extends Vue {
     }
   }
 
-  get x() {
+  get keyValueList() {
+    const today = new Date();
+    const array = [];
+    for (let i = 0; i < 30; i++) {
+      const dateString = day(today).subtract(i, 'day').format('YYYY-MM-DD');
+      const found = _.find(this.recordList, {createdAt: dateString});
+      array.sort((a, b) => {
+        if (a.date > b.date) {
+          return 1;
+        } else if (a.date === b.date) {
+          return 0;
+        } else {
+          return -1;
+        }
+      });
+    }
+    array.sort((a, b) => a.date < b.date ? -1:1);
+    return array;
+  }
+  get chartOptions() {
+
+    const keys = this.keyValueList.map(item => item.date);
+    const values = this.keyValueList.map(item => item.value);
+
     return {
       grid: {
         left: 0,
@@ -74,11 +99,7 @@ export default class Statistics extends Vue {
       },
       xAxis: {
         type: 'category',
-        data: [
-          '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-          '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-          '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
-        ],
+        data: keys,
         axisTick: {alignWithLabel: true},
         axisLine: {lineStyle: {color: '#666'}}
       },
@@ -90,12 +111,7 @@ export default class Statistics extends Vue {
         symbol: 'circle',
         symbolSize: 12,
         itemStyle: {borderWidth: 1, color: '#666', borderColor: '#666'},
-        data: [
-          820, 932, 901, 934, 1290, 1330, 1320,
-          820, 932, 901, 934, 1290, 1330, 1320,
-          820, 932, 901, 934, 1290, 1330, 1320,
-          820, 932, 901, 934, 1290, 1330, 1320, 1, 2
-        ],
+        data: values,
         type: 'line'
       }],
       tooltip: {
@@ -117,8 +133,9 @@ export default class Statistics extends Vue {
       return [];
     }
     const newList = clone(recordList)
-        .filter(r => r.type === this.type)
-        .sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf());
+      .filter(r => r.type === this.type)
+      .sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf());
+
     type Result = { title: string, total?: number, items: RecordItem[] }[]
     const result: Result = [{title: dayjs(newList[0].createdAt).format('YYYY-MM-DD'), items: [newList[0]]}];
     for (let i = 1; i < newList.length; i++) {
