@@ -73,23 +73,26 @@ export default class Statistics extends Vue {
     const array = [];
     for (let i = 0; i < 30; i++) {
       const dateString = day(today).subtract(i, 'day').format('YYYY-MM-DD');
-      const found = _.find(this.recordList, {createdAt: dateString});
-      array.sort((a, b) => {
-        if (a.date > b.date) {
-          return 1;
-        } else if (a.date === b.date) {
-          return 0;
-        } else {
-          return -1;
-        }
+      const found = _.find(this.groupedList, {title: dateString});
+      array.push({
+        key: dateString, value: found ? found.total : 0
       });
     }
-    array.sort((a, b) => a.date < b.date ? -1:1);
+    array.sort((a, b) => {
+      if (a.key > b.key) {
+        return 1;
+      } else if (a.key === b.key) {
+        return 0;
+      } else {
+        return -1;
+      }
+    });
+
     return array;
   }
   get chartOptions() {
 
-    const keys = this.keyValueList.map(item => item.date);
+    const keys = this.keyValueList.map(item => item.key);
     const values = this.keyValueList.map(item => item.value);
 
     return {
@@ -101,7 +104,12 @@ export default class Statistics extends Vue {
         type: 'category',
         data: keys,
         axisTick: {alignWithLabel: true},
-        axisLine: {lineStyle: {color: '#666'}}
+        axisLine: {lineStyle: {color: '#666'}},
+        axisLabel: {
+          formatter: function (value: string, index: number) {
+            return value.substr(5)
+          }
+        }
       },
       yAxis: {
         type: 'value',
